@@ -2,7 +2,12 @@
 #include <stdlib.h>
 #include <time.h>
 #include "arraylist.c"
+#include <string.h>
 #include "arraylist.h"
+#include "list.h"
+#define List_h
+#ifndef ARRAYLIST_H
+#define ARRAYLIST_H
 
 typedef struct
 {
@@ -27,15 +32,15 @@ void mostrarMenu(){
 
 int ticketExiste(List *bajo, List *medio, List *alto, int idTicket){
     for (int k = 0 ; k < get_size(bajo) ; k++){
-        ticket *t = (ticket *)get(bajo, k) ;
+        ticket *t = (ticket *)bajo->data[k] ;
         if (t->id == idTicket){
             return 1 ;}}
     for (int k = 0 ; k < get_size(medio) ; k++){
-        ticket *t = (ticket *)get(medio, k) ;
+        ticket *t = (ticket *)medio->data[k] ;
         if (t->id == idTicket){
             return 1 ;}}
     for (int k = 0 ; k < get_size(alto) ; k++){
-        ticket *t = (ticket *)get(alto, k) ;
+        ticket *t = (ticket *)alto->data[k] ;
         if (t->id == idTicket){
             return 1 ;}}
     return 0 ;
@@ -75,20 +80,20 @@ void asignarPrioridad(List *bajo, List *medio, List *alto){
     scanf("%d", &idTicket) ;
 
     for (int k = 0; k < get_size(bajo); k++){
-        ticket *t = (ticket *)get(bajo, k) ;
+        ticket *t = (ticket *)bajo->data[k] ;
         if (t->id == idTicket){
             t->prioridad = 2 ;
             pushBack(medio, t) ;
-            remove(bajo, k) ;
+            popCurrent(bajo) ;
             printf("Ticket con ID %d cambiado a prioridad media\n", idTicket) ;
             return ;}}
 
     for (int k = 0; k < get_size(medio); k++){
-        ticket *t = (ticket *)get(medio, k) ;
+        ticket *t = (ticket *)medio->data[k] ;
         if (t->id == idTicket){
             t->prioridad = 1 ;
             pushBack(alto, t) ;
-            remove(medio, k) ; //ojo con el indice
+            popCurrent(medio) ; //ojo con el indice
             printf("Ticket con ID %d cambiado a prioridad alta\n", idTicket) ;
             return ; }}
     
@@ -99,18 +104,105 @@ void mostrarListaEspera(List *bajo, List *medio, List *alto){
     printf("Tickets en espera:\n") ;
 
     for (int k = 0 ; k < get_size(bajo) ; k++){
-        ticket *t = (ticket *)get(bajo, k) ;
+        ticket *t = (ticket *)bajo->data[k] ;
         printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Baja\n", t->id, t->descripcion, t->horaRegistro) ;
     } 
     for (int k = 0 ; k < get_size(medio) ; k++){
-        ticket *t = (ticket *)get(medio, k) ;
+        ticket *t = (ticket *)medio->data[k] ;
         printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Media\n", t->id, t->descripcion, t->horaRegistro) ;
     } 
     for (int k = 0 ; k < get_size(alto) ; k++){
-        ticket *t = (ticket *)get(alto, k) ;
+        ticket *t = (ticket *)alto->data[k] ;
         printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Alta\n", t->id, t->descripcion, t->horaRegistro) ;
     } 
 }
+
+void siguienteTicket(List *alto, List *medio, List *bajo){
+    ticket *miniT = NULL ;
+    char confirmacion ;
+
+    if (get_size(alto) > 0){
+        miniT = (ticket *)alto->data[0] ;
+        printf("\n --- Atendiendo ticket --- \n") ;
+        printf("¿Está seguro de atender el ticket con la ID %d? (s/n): ", miniT->id) ;
+        scanf(" %c", &confirmacion) ; getchar() ;
+        if (confirmacion == 's' || confirmacion == 'S'){
+            popCurrent(alto) ;
+            printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Alta\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+        } else if (confirmacion == 'n' || confirmacion == 'N') {
+            printf("Atención cancelada.\n") ;
+        } else{
+            printf("Seleccione una opción mencionada\n") ;
+        }
+        return ;
+        
+    }else if (get_size(medio) > 0){
+        miniT = (ticket *)medio->data[0] ;
+        printf("\n --- Atendiendo ticket --- \n") ;
+        printf("¿Está seguro de atender el ticket con la ID %d? (s/n): ", miniT->id) ;
+        scanf(" %c", &confirmacion) ; getchar() ;
+        if (confirmacion == 's' || confirmacion =='S'){
+            popCurrent(medio) ;
+            printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Media\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+        } else if (confirmacion == 'n' || confirmacion == 'N'){
+            printf("Atención cancelada.\n") ;
+        } else{
+            printf("Seleccione una opción mencionada\n") ;
+        }
+        return ;
+
+    }else if (get_size(bajo) > 0){
+        miniT = (ticket *)bajo->data[0] ;  
+        printf("\n --- Atendiendo ticket --- \n") ;
+        printf("¿Está seguro de atender el ticket con la ID %d? (s/n): ", miniT->id) ;
+        scanf(" %c", &confirmacion) ; getchar() ;
+        if (confirmacion == 's' || confirmacion == 'S'){
+            popCurrent(bajo) ;
+            printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Baja\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+        } else if (confirmacion == 'n' || confirmacion == 'N'){
+            printf("Atención cancelada.\n") ;
+        } else{
+            printf("Seleccione una opción mencionada\n") ;
+        }
+        return ;
+    }else{
+        printf("No hay tickets en espera...\n") ;
+        return ;
+    }
+}
+
+void buscarTicketID(List *bajo, List *medio, List *alto){
+    int idBuscado ;
+    printf("Ingrese el ID del ticket a buscar: ") ;
+    scanf("%d", &idBuscado) ; getchar() ;
+
+    for (int k = 0 ; k < get_size(alto) ; k++){
+        ticket *miniT = (ticket *)alto->data[k] ;
+        if (miniT->id == idBuscado){
+            printf("\n --- Ticket Encontrado --- \n") ;
+            printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Alta\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+            return ;
+        }
+    }
+    for (int k = 0 ; k < get_size(medio) ; k++){
+        ticket *miniT = (ticket *)medio->data[k] ;
+        if (miniT->id == idBuscado){
+            printf("\n --- Ticket Encontrado --- \n") ;
+            printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Media\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+            return ;
+        } 
+    }
+    for (int k = 0 ; k < get_size(bajo) ; k++){
+        ticket *miniT = (ticket *)bajo->data[k] ;
+        if (miniT->id == idBuscado){
+            printf("\n --- Ticket Encontrado --- \n") ;
+            printf("ID: %d | Descripción: %s | Hora: %s | Prioridad: Baja\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+            return ;
+        }
+    }
+    printf("No se encontró un ticket con la ID %d\n", idBuscado) ;
+}
+
 int main()
 {
     char opcion ;
@@ -135,10 +227,10 @@ int main()
                 mostrarListaEspera(priBaja, priMedia, priAlta) ;
                 break ;
             case '4':
-                // Implementar la lógica para atender el siguiente ticket
+                siguienteTicket(priAlta, priMedia, priBaja) ;
                 break ;
             case '5':
-                // Implementar la lógica para mostrar tickets por prioridad
+                buscarTicketID(priBaja, priMedia, priAlta) ;
                 break ;
             case '6':
                 printf("Saliendo del programa...\n") ;
@@ -148,4 +240,6 @@ int main()
     }while (opcion != '6') ;
 
     return 0 ;
-} 
+}
+#endif
+
