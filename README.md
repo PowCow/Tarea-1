@@ -18,7 +18,7 @@ mas urgentes se resuelvan primero, proporcionando una atencion rapida y organiza
   Menu principal:
 
   ===============================================
-       Sistema de Gestión de Soporte Técnico
+       Sistema de Gestión de Soporte Técnico     
   ===============================================
   1) Registrar nuevo ticket
   2) Asignar nueva prioridad a un ticket
