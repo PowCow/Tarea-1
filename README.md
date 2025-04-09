@@ -14,7 +14,9 @@ mas urgentes se resuelvan primero, proporcionando una atencion rapida y organiza
 2. Funcionalidades :
    
 3. Ejemplo de Uso :
+   
   Menu principal:
+
   ===============================================
        Sistema de Gestión de Soporte Técnico
   ===============================================
