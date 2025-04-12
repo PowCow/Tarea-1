@@ -8,6 +8,7 @@ DESCRIPCION :
 Este programa permite gestionar los tickets de un soporte tecnico con diferentes niveles de prioridad (alta, media, baja), los usuarios pueden registrar nuevos tickets, modificiar la prioridad, consultar la lista de espera, atender tickets por el orden de prioridad y buscar tickets por ID. Esta herramienta esta diseñada para organizar eficientemente la atencion en el soporte tecnico, asegurandose que los problemas mas urgentes se resuelvan primero.
 
 1. Como compilar y ejecutar :
+   
    El programa fue diseñado en el lenguaje C, puede ser ejecutado en Visual Studio Code, con una extension de C/C++ de Microsoft. Los pasos a seguir para empezar a trabajar con el programa son :
    - Tener instalado Visual Studio Code (https://code.visualstudio.com/)
    - Instalar la extencion de C/C++ Extension Pack ubicada en Visual Studio Code
