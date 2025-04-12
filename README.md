@@ -13,6 +13,7 @@ Este programa permite gestionar los tickets de un soporte tecnico con diferentes
    - Tener instalado Visual Studio Code (https://code.visualstudio.com/)
    - Instalar la extencion de C/C++ Extension Pack ubicada en Visual Studio Code
    - Instalar (si no se tiene) un compilador de C (como gcc). Si se esta en Windows se recomienda descargar MinGW (https://www.mingw-w64.org/)
+   
    Los pasos para compilar y ejecutar el programa son:
    * Abrir el proyecto :
       - Descargar el archivo .zip que contiene el programa y descomprimirlo en una carpeta local
