@@ -85,7 +85,7 @@ Este programa permite gestionar los tickets de un soporte tecnico con diferentes
             Ticket atendido y removido con exito !
          Desea atender este ticket? (s/n): n
             Atencion Cancelada...
-   En el menu al seleccionar la opcion 6) se sale del menu y termina el programa
+   En el menu al seleccionar la opcion 6) se sale del menu y termina el programa.
 
          ....
          5) Mostrar ticket por ID
