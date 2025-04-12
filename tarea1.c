@@ -8,7 +8,7 @@
 typedef struct
 {
     int id ; // ej. 1234
-    char descripcion[201] ; //ej. "No enciende la pantalla"
+    char descripcion[201] ; //ej. "No enciende la pantalla del monitor"
     char horaRegistro[10] ; // ej. 10:54:02 
     unsigned short prioridad ; // 1. Alta 2. Media 3. Baja
 } ticket ; //guarda la info del ticket
