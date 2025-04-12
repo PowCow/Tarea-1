@@ -44,7 +44,7 @@ Este programa permite gestionar los tickets de un soporte tecnico con diferentes
        
    * A mejorar:
      - Implementar carga y guardado de tickets desde otros archivos
-     - Una interfaz de usuario mas agradable :)
+     - Una interfaz de usuario mas agradable 
      - Errores de prueba variados
        
 3. Ejemplo de Uso :
