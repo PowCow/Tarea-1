@@ -5,16 +5,13 @@
 #include <ctype.h>
 #include "tdas/list.h"
 
-//compilar : gcc tdas/*.c tarea1.c -Wno-unused-result -o tarea1
-//ejecutar : ./tarea1
-
 typedef struct
 {
-    int id ;
-    char descripcion[101] ;
+    int id ; // ej. 1234
+    char descripcion[201] ; //ej. "No enciende la pantalla"
     char horaRegistro[10] ; // ej. 10:54:02 
     unsigned short prioridad ; // 1. Alta 2. Media 3. Baja
-} ticket ;
+} ticket ; //guarda la info del ticket
 
 void mostrarMenu(){
     puts("===============================================") ;
@@ -23,7 +20,7 @@ void mostrarMenu(){
     puts("1) Registrar nuevo ticket") ;
     puts("2) Asignar nueva prioridad a un ticket") ;
     puts("3) Mostrar lista de espera") ;
-    puts("4) Atender al siguiente ticket") ;
+    puts("4) Atender ticket") ;
     puts("5) Mostrar ticket por ID") ;
     puts("6) Salir") ;
 }
@@ -48,7 +45,7 @@ int ticketExiste(List *bajo, List *medio, List *alto, int idTicket){ //Comprueba
 }
 
 void registrarTicket(List *bajo, List *medio, List *alto){ //registra el ticket del usuario
-    ticket *nuevoT = malloc(sizeof(ticket)) ;
+    ticket *nuevoT = malloc(sizeof(ticket)) ; //reservamos memoria para el ticket
     if (nuevoT == NULL){
         printf("Error al crear el ticket\n") ;
         return ;}
@@ -57,22 +54,22 @@ void registrarTicket(List *bajo, List *medio, List *alto){ //registra el ticket 
     scanf("%d", &nuevoT->id) ;
     getchar() ; 
 
-    if (ticketExiste(bajo, medio, alto, nuevoT->id)){ //revisar
+    if (ticketExiste(bajo, medio, alto, nuevoT->id)){ //verificamos si el ticket ya existe
         printf("El ticket con ID %d ya existe\n", nuevoT->id) ;
-        free(nuevoT) ;
+        free(nuevoT) ; //se libera memoria si ya existia el ticket
         return ;}
 
     printf("Ingrese una descripcion de su problema: ") ;
-    fgets(nuevoT->descripcion, 100, stdin) ;
-    nuevoT->descripcion[strcspn(nuevoT->descripcion, "\n")] = 0 ;
+    fgets(nuevoT->descripcion, 100, stdin) ; 
+    nuevoT->descripcion[strcspn(nuevoT->descripcion, "\n")] = 0 ; 
     
     //registramos hora actual
-    time_t tiempo = time(NULL) ;
-    struct tm *infoTime = localtime(&tiempo) ;
-    strftime(nuevoT->horaRegistro, 10, "%H:%M:%S", infoTime) ;
+    time_t tiempo = time(NULL) ; 
+    struct tm *infoTime = localtime(&tiempo) ; 
+    strftime(nuevoT->horaRegistro, 10, "%H:%M:%S", infoTime) ; 
 
     char opPrioridad ;
-    do{
+    do{ 
         printf("Ingrese prioridad de su problema (A = ALTO , M = MEDIO, B = BAJO): ") ;
         scanf(" %c", &opPrioridad) ; getchar() ;
         opPrioridad = toupper(opPrioridad) ;
@@ -84,22 +81,22 @@ void registrarTicket(List *bajo, List *medio, List *alto){ //registra el ticket 
         case 'A':
             nuevoT->prioridad = 1 ;
             list_pushBack(alto, nuevoT) ;
-            printf("Ticket registrado con prioridad ALTA\n") ;
+            printf(" Ticket registrado con prioridad ALTA\n\n") ;
             break ;
         case 'M':
             nuevoT->prioridad = 2 ;
             list_pushBack(medio, nuevoT) ;
-            printf("Ticket registrado con prioridad MEDIA\n") ;
+            printf(" Ticket registrado con prioridad MEDIA\n\n") ;
             break ;
         case 'B':
             nuevoT->prioridad = 3 ;
             list_pushBack(bajo, nuevoT) ;
-            printf("Ticket registrado con prioridad BAJA\n\n") ;
+            printf(" Ticket registrado con prioridad BAJA\n\n") ;
 
     }
 }
 
-void asignarPrioridad(List *bajo, List *medio, List *alto){ //Asigna prioridad al ticket, empieza en bajo
+void asignarPrioridad(List *bajo, List *medio, List *alto){ //Asigna prioridad al ticket
     int idTicket ;
     printf("Ingrese el ID del ticket a modificar: ") ;
     scanf("%d", &idTicket) ; getchar() ;
@@ -109,7 +106,7 @@ void asignarPrioridad(List *bajo, List *medio, List *alto){ //Asigna prioridad a
     unsigned short newPrioridad = 0 ;
 
     //buscar lista ALTA
-    for (ticket *miniT = (ticket *)list_first(alto) ; miniT != NULL ; miniT = (ticket *)list_next(alto)){
+    for (ticket *miniT = (ticket *)list_first(alto) ; miniT != NULL ; miniT = (ticket *)list_next(alto)){ 
         if (miniT->id == idTicket){
             tEncontrado = miniT ;
             listaAux = alto ;
@@ -141,13 +138,12 @@ void asignarPrioridad(List *bajo, List *medio, List *alto){ //Asigna prioridad a
     printf("\n Ticket Encontrado - Prioridad Actual : %s\n", (newPrioridad == 1) ? "ALTA" : (newPrioridad == 2) ? "MEDIA" : "BAJA") ;
     printf("ID: %d | Descripcion: %s\n", tEncontrado->id, tEncontrado->descripcion) ;
 
-
     //solicita nueva prioridad
     char nuevaPrioridad;
     do {
         printf("\nSeleccione nueva prioridad (A = Alta, M = Media, B = Baja): ") ;
         scanf(" %c", &nuevaPrioridad) ; getchar();
-        nuevaPrioridad = toupper(nuevaPrioridad) ;
+        nuevaPrioridad = toupper(nuevaPrioridad) ; //cambia las letras a mayusculas
     } while(nuevaPrioridad != 'A' && nuevaPrioridad != 'M' && nuevaPrioridad != 'B') ;
 
     // Determinar lista destino
@@ -174,7 +170,7 @@ void asignarPrioridad(List *bajo, List *medio, List *alto){ //Asigna prioridad a
         return;
     }
 
-    // Mover el ticket a la nueva lista
+    // Mover el ticket a la nueva lista por prioridad
     list_pushBack(listaDestino, tEncontrado) ;
     list_popCurrent(listaAux) ;
     tEncontrado->prioridad = nuevaPrioridadNum ;
@@ -182,24 +178,25 @@ void asignarPrioridad(List *bajo, List *medio, List *alto){ //Asigna prioridad a
     printf("Prioridad cambiada a %s\n", (nuevaPrioridadNum == 1) ? "ALTA" : (nuevaPrioridadNum == 2) ? "MEDIA" : "BAJA") ;
 }
 
-void mostrarListaEspera(List *bajo, List *medio, List *alto){ //CAMBIADO
+void mostrarListaEspera(List *bajo, List *medio, List *alto){ //muestra los tickets que esperan ser atendidos
     printf("\nTickets en espera:\n") ;
 
-    printf("\n --- PRIORIDAD ALTA --- \n") ;
+    printf("\n --- PRIORIDAD ALTA --- \n") ; //muestra todos los tickets con prioridad alta
     for (ticket *miniT = (ticket *)list_first(alto) ; miniT != NULL ; miniT = (ticket *)list_next(alto)){
         printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: Alta\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
     } 
-    printf("\n --- PRIORIDAD MEDIA --- \n") ;
+    printf("\n --- PRIORIDAD MEDIA --- \n") ; //muestra todos los tickets con prioridad media
     for (ticket *miniT = (ticket *)list_first(medio) ; miniT != NULL ; miniT = (ticket *)list_next(medio)){
         printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: Media\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
     } 
-    printf("\n --- PRIORIDAD BAJA --- \n") ;
+    printf("\n --- PRIORIDAD BAJA --- \n") ; //muestra todos los tickets con prioridad baja
     for (ticket *miniT = (ticket *)list_first(bajo) ; miniT != NULL ; miniT = (ticket *)list_next(bajo)){
         printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: Baja\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
     } 
+    printf("\n") ;
 }
 
-void siguienteTicket(List *alto, List *medio, List *bajo){ //CAMBIADO
+void siguienteTicket(List *alto, List *medio, List *bajo){ //muestra el ticket a atender
     ticket *miniT = NULL ;
     char confirmacion ;
     const char *prioridad = "" ;
@@ -222,23 +219,23 @@ void siguienteTicket(List *alto, List *medio, List *bajo){ //CAMBIADO
         return ;
     }
     printf("\n --- Atendiendo Ticket --- \n") ;
-    printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: %s\n", miniT->id, miniT->descripcion, miniT->horaRegistro, prioridad) ;
-    printf("¿Desea atender este ticket? (s/n): ") ;
+    printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: %s\n\n", miniT->id, miniT->descripcion, miniT->horaRegistro, prioridad) ;
+    printf("Desea atender este ticket? (s/n): ") ;
     scanf(" %c", &confirmacion) ;
     getchar() ;
 
     if (confirmacion == 's' || confirmacion == 'S'){
         ticket *atendido = (ticket *)list_popFront(listaAux) ; 
-        printf("¡ Ticket atendido y removido con exito !\n") ;
-        free(atendido) ; //libera memoria del ticket atendido
+        printf("\n Ticket atendido y removido con exito !\n\n") ;
+        free(atendido) ; //liberar memoria del ticket atendido
     } else if (confirmacion == 'n' || confirmacion == 'N'){ 
-        printf("Atencion Cancelada...\n") ;
+        printf("\n Atencion Cancelada...\n\n") ;
     } else{
-        printf("Opcion no valida. Use 's' o 'n'. \n") ;
+        printf("\n Opcion no valida. Use 's' o 'n'. \n\n") ;
     }
 }
 
-void buscarTicketID(List *bajo, List *medio, List *alto){ //CAMBIADO
+void buscarTicketID(List *bajo, List *medio, List *alto){ //busca un ticket especifico por ID
     int idBuscado ;
     printf("Ingrese el ID del ticket a buscar: ") ;
     scanf("%d", &idBuscado) ; getchar() ;
@@ -246,31 +243,32 @@ void buscarTicketID(List *bajo, List *medio, List *alto){ //CAMBIADO
     for (ticket *miniT = (ticket *)list_first(alto) ; miniT != NULL ; miniT = (ticket *)list_next(alto)){
         if (miniT->id == idBuscado){
             printf("\n --- Ticket encontrado --- \n") ;
-            printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: ALTA\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+            printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: ALTA\n\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
             return ;
         }
     }
     for (ticket *miniT = (ticket *)list_first(medio) ; miniT != NULL ; miniT = (ticket *)list_next(medio)){
         if (miniT->id == idBuscado){
             printf("\n --- Ticket encontrado --- \n") ;
-            printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: MEDIA\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+            printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: MEDIA\n\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
             return ;
         }
     }
     for (ticket *miniT = (ticket *)list_first(bajo) ; miniT != NULL ; miniT = (ticket *)list_next(bajo)){
         if (miniT->id == idBuscado){
             printf("\n --- Ticket encontrado --- \n") ;
-            printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: BAJA\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
+            printf("ID: %d | Descripcion: %s | Hora: %s | Prioridad: BAJA\n\n", miniT->id, miniT->descripcion, miniT->horaRegistro) ;
             return ;
         }
     }
-    printf("No se encontro un ticket con la ID %d\n", idBuscado) ;
+    printf("No se encontro un ticket con la ID %d\n\n", idBuscado) ;
 }
 
 int main()
 {
-    char opcion ;
-    List *priAlta = list_create() ;
+    char opcion ; //guarda la opcion del menu
+    //crea listas para cada prioridad
+    List *priAlta = list_create() ; 
     List *priMedia = list_create() ;
     List *priBaja = list_create() ;
 
@@ -302,12 +300,9 @@ int main()
                 list_clean(priMedia) ;
                 list_clean(priAlta) ;
                 break ;
-            default:
+            default: //no se selecciona una opcion valida, se intenta de nuevo
                 printf("Opcion no valida. Intente de nuevo...\n") ;}
     }while (opcion != '6') ;
 
     return 0 ;
 }
-
-
-
